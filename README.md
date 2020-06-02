@@ -1,4 +1,4 @@
-Sorting visualizer
+# Sorting visualizer
 
 ### Website link 
 https://sortingvisualizer.web.app/
