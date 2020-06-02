@@ -3,25 +3,23 @@ import SortingAlgos from '../Algorithms/SortingAlgos';
 import '../styles/CustomStyles.css';
 import RangeSlider from 'react-bootstrap-range-slider';
 
-
 class SortingVisualizer extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			array: [],
-      obj: new SortingAlgos(),
-      speed: 2
+			obj: new SortingAlgos(),
+			speed: 2
 		};
 	}
 
 	componentDidMount() {
 		this.resetArray(false);
 	}
-  
+
 	resetArray(reload) {
-    if(reload)
-      window.location.reload();
+		if (reload) window.location.reload();
 		const array = [];
 
 		for (let i = 0; i < 100; i++) {
@@ -56,27 +54,25 @@ class SortingVisualizer extends Component {
 					className="row justify-content-center"
 					style={{ margin: '10px' }}
 				>
-          
-          <button
+					<button
 						className="btn btn-dark sort-button"
 						onClick={() =>
 							obj.bubbleSort(
 								array,
-                document.getElementsByClassName('array-bar'),
-                speed
+								document.getElementsByClassName('array-bar'),
+								speed
 							)}
 					>
 						Bubble sort
 					</button>
 
-          
 					<button
 						className="btn btn-dark sort-button"
 						onClick={() =>
 							obj.mergeSort(
 								array,
-                document.getElementsByClassName('array-bar'),
-                speed * speed * 5
+								document.getElementsByClassName('array-bar'),
+								speed * speed * 5
 							)}
 					>
 						Merge sort
@@ -89,17 +85,18 @@ class SortingVisualizer extends Component {
 						Reset Array
 					</button>
 				</div>
-        <div className="col d-flex justify-content-center">
-          <p>Slow motion control</p>
-        </div>
-        <div className='col d-flex justify-content-center'>
-          <RangeSlider
-            min={1}
-            max={5}
-            value={speed}
-            onChange={changeEvent => this.setState({speed: changeEvent.target.value})}
-          />
-        </div>
+				<div className="col d-flex justify-content-center">
+					<p>Slow motion control</p>
+				</div>
+				<div className="col d-flex justify-content-center">
+					<RangeSlider
+						min={1}
+						max={5}
+						value={speed}
+						onChange={(changeEvent) =>
+							this.setState({ speed: changeEvent.target.value })}
+					/>
+				</div>
 			</div>
 		);
 	}
