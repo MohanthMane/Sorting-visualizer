@@ -15,7 +15,8 @@ class SortingVisualizer extends Component {
 			speedToSec: [ 10, 25, 50, 100, 250, 500, 750, 1000, 2000, 3500 ],
 			arraySize: 10,
 			levels: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
-			algorithm: 'BUBBLE'
+			algorithm: 'BUBBLE',
+			timeTaken: null
 		};
 	}
 
@@ -57,22 +58,24 @@ class SortingVisualizer extends Component {
 		this.setState({ algorithm });
 	};
 
-	sortArray = (e) => {
+	sortArray = async (e) => {
 		e.preventDefault();
 
 		const { algorithm, array, speed, speedToSec } = this.state;
 		const arrayBars = document.getElementsByClassName('array-bar');
 
+		var start = new Date().getTime();
 		if (algorithm === 'BUBBLE') {
-			bubbleSort(array, arrayBars, speedToSec[speed - 1]);
+			await bubbleSort(array, arrayBars, speedToSec[speed - 1]);
 		} else if (algorithm === 'MERGE') {
-			mergeSort(array, arrayBars, speedToSec[speed - 1]);
-			console.log(array);
+			await mergeSort(array, arrayBars, speedToSec[speed - 1]);
 		} else if (algorithm === 'INSERTION') {
-			insertionSort(array, arrayBars, speedToSec[speed - 1])
-		} else if(algorithm === 'SELECTION') {
-			selectionSort(array, arrayBars, speedToSec[speed - 1])
+			await insertionSort(array, arrayBars, speedToSec[speed - 1]);
+		} else if (algorithm === 'SELECTION') {
+			await selectionSort(array, arrayBars, speedToSec[speed - 1]);
 		}
+		var timeTaken = new Date().getTime() - start;
+		this.setState({ timeTaken });
 	};
 
 	render() {
@@ -123,8 +126,12 @@ class SortingVisualizer extends Component {
 								>
 									<option value="bubble">Bubble sort</option>
 									<option value="merge">Merge Sort</option>
-									<option value="insertion">Insertion Sort</option>
-									<option value="selection">Selection Sort</option>
+									<option value="insertion">
+										Insertion Sort
+									</option>
+									<option value="selection">
+										Selection Sort
+									</option>
 								</select>
 							</div>
 							<div className="form-group form-button">
@@ -152,6 +159,14 @@ class SortingVisualizer extends Component {
 									Reset array
 								</button>
 							</div>
+							{this.state.timeTaken && (
+								<div className="form-group form-component">
+									<p>
+										Time taken:{' '}
+										{this.state.timeTaken / 1000}sec
+									</p>
+								</div>
+							)}
 						</form>
 					</div>
 				</div>
