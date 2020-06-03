@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import SortingAlgos from '../Algorithms/SortingAlgos';
+import { mergeSort } from '../Algorithms/MergeSort';
+import { bubbleSort } from '../Algorithms/BubbleSort';
+import { insertionSort } from '../Algorithms/InsertionSort';
+import { selectionSort } from '../Algorithms/SelectionSort';
 import '../styles/CustomStyles.css';
 
 class SortingVisualizer extends Component {
@@ -8,7 +11,6 @@ class SortingVisualizer extends Component {
 
 		this.state = {
 			array: [],
-			obj: new SortingAlgos(),
 			speed: 1,
 			speedToSec: [ 10, 25, 50, 100, 250, 500, 750, 1000, 2000, 3500 ],
 			arraySize: 10,
@@ -19,7 +21,7 @@ class SortingVisualizer extends Component {
 
 	componentDidMount() {
 		const array = this.generateArray(this.state.arraySize);
-		this.setState({array})
+		this.setState({ array });
 	}
 
 	handleArraySize = (event) => {
@@ -58,14 +60,18 @@ class SortingVisualizer extends Component {
 	sortArray = (e) => {
 		e.preventDefault();
 
-		const { algorithm, obj, array, speed, speedToSec } = this.state;
+		const { algorithm, array, speed, speedToSec } = this.state;
 		const arrayBars = document.getElementsByClassName('array-bar');
 
 		if (algorithm === 'BUBBLE') {
-			obj.bubbleSort(array, arrayBars, speedToSec[speed - 1]);
+			bubbleSort(array, arrayBars, speedToSec[speed - 1]);
 		} else if (algorithm === 'MERGE') {
-			obj.mergeSort(array, arrayBars, speedToSec[speed - 1]);
-			console.log(array)
+			mergeSort(array, arrayBars, speedToSec[speed - 1]);
+			console.log(array);
+		} else if (algorithm === 'INSERTION') {
+			insertionSort(array, arrayBars, speedToSec[speed - 1])
+		} else if(algorithm === 'SELECTION') {
+			selectionSort(array, arrayBars, speedToSec[speed - 1])
 		}
 	};
 
@@ -117,6 +123,8 @@ class SortingVisualizer extends Component {
 								>
 									<option value="bubble">Bubble sort</option>
 									<option value="merge">Merge Sort</option>
+									<option value="insertion">Insertion Sort</option>
+									<option value="selection">Selection Sort</option>
 								</select>
 							</div>
 							<div className="form-group form-button">
@@ -130,17 +138,24 @@ class SortingVisualizer extends Component {
 								</button>
 							</div>
 							<div className="form-group form-button">
-								<button className="btn btn-danger form-control" onClick={(e) => {
-									e.preventDefault();
-									this.setState({array:this.generateArray(this.state.arraySize)})
-								}}>
+								<button
+									className="btn btn-danger form-control"
+									onClick={(e) => {
+										e.preventDefault();
+										this.setState({
+											array: this.generateArray(
+												this.state.arraySize
+											)
+										});
+									}}
+								>
 									Reset array
 								</button>
 							</div>
 						</form>
 					</div>
 				</div>
-				<div className="col-md-8 col-sm" >
+				<div className="col-md-8 col-sm">
 					<div
 						className="d-flex flex-row justify-content-center align-items-start col-auto"
 						style={{
