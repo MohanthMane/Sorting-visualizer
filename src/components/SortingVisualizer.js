@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import SortingAlgos from '../Algorithms/SortingAlgos';
 import '../styles/CustomStyles.css';
-import RangeSlider from 'react-bootstrap-range-slider';
 
 class SortingVisualizer extends Component {
 	constructor(props) {
@@ -10,92 +9,160 @@ class SortingVisualizer extends Component {
 		this.state = {
 			array: [],
 			obj: new SortingAlgos(),
-			speed: 2
+			speed: 1,
+			speedToSec: [ 10, 25, 50, 100, 250, 500, 750, 1000, 2000, 3500 ],
+			arraySize: 10,
+			levels: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+			algorithm: 'BUBBLE'
 		};
 	}
 
 	componentDidMount() {
-		this.resetArray(false);
+		const array = this.generateArray(this.state.arraySize);
+		this.setState({array})
 	}
 
-	resetArray(reload) {
-		if (reload) window.location.reload();
-		const array = [];
-
-		for (let i = 0; i < 100; i++) {
-			array.push(getRandomInRange(5, 350));
+	handleArraySize = (event) => {
+		event.preventDefault();
+		const size = event.target.value;
+		this.setState({ arraySize: size });
+		// console.log(size)
+		if (size >= 10 && size <= 50) {
+			const array = this.generateArray(size);
+			this.setState({ array });
 		}
-		this.setState({ array });
-	}
+	};
+
+	generateArray = (size) => {
+		const array = [];
+		for (let i = 0; i < size; i++) {
+			array.push(getRandomInRange(5, 100));
+		}
+		return array;
+	};
+
+	handleSpeed = (event) => {
+		event.preventDefault();
+
+		const speed = event.target.value;
+		this.setState({ speed });
+	};
+
+	handleAlgo = (event) => {
+		event.preventDefault();
+
+		const algorithm = event.target.value.toUpperCase();
+		this.setState({ algorithm });
+	};
+
+	sortArray = (e) => {
+		e.preventDefault();
+
+		const { algorithm, obj, array, speed, speedToSec } = this.state;
+		const arrayBars = document.getElementsByClassName('array-bar');
+
+		if (algorithm === 'BUBBLE') {
+			obj.bubbleSort(array, arrayBars, speedToSec[speed - 1]);
+		} else if (algorithm === 'MERGE') {
+			obj.mergeSort(array, arrayBars, speedToSec[speed - 1]);
+			console.log(array)
+		}
+	};
 
 	render() {
-		const { array, obj, speed } = this.state;
+		const { array } = this.state;
 
 		return (
-			<div className="container">
-				<div
-					className="d-flex flex-row justify-content-center align-items-end col-auto"
-					style={{ height: '400px', width: '1200px' }}
-				>
-					{array.map((item, index) => (
-						<div
-							className="array-bar"
-							style={{
-								height: `${item}px`,
-								width: '10px',
-								margin: '0 1px',
-								backgroundColor: `#303846`
-							}}
-							key={index}
-						/>
-					))}
+			<div className="row">
+				<div className="col-md-4 col-sm">
+					<div style={{ background: '#61DBFB', height: '100%' }}>
+						<h2 className="form-component">Options</h2>
+						<form>
+							<div className="form-group form-component">
+								<label htmlFor="arraySize">
+									Array size : {this.state.arraySize}
+								</label>
+								<input
+									type="number"
+									min={10}
+									max={50}
+									className="form-control"
+									id="arraySize"
+									value={this.state.arraySize}
+									onChange={(e) => this.handleArraySize(e)}
+								/>
+							</div>
+							<div className="form-group form-component">
+								<label htmlFor="speed">
+									Slow motion level : {this.state.speed}
+								</label>
+								<select
+									className="form-control"
+									id="speed"
+									onChange={(e) => this.handleSpeed(e)}
+								>
+									{this.state.levels.map((item) => (
+										<option>{item}</option>
+									))}
+								</select>
+							</div>
+							<div className="form-group form-component">
+								<label htmlFor="algo">
+									Algorithm : {this.state.algorithm + ' SORT'}
+								</label>
+								<select
+									className="form-control"
+									id="algo"
+									onChange={(e) => this.handleAlgo(e)}
+								>
+									<option value="bubble">Bubble sort</option>
+									<option value="merge">Merge Sort</option>
+								</select>
+							</div>
+							<div className="form-group form-button">
+								<button
+									className="btn btn-success form-control"
+									onClick={(e) => {
+										this.sortArray(e);
+									}}
+								>
+									Sort array
+								</button>
+							</div>
+							<div className="form-group form-button">
+								<button className="btn btn-danger form-control" onClick={(e) => {
+									e.preventDefault();
+									this.setState({array:this.generateArray(this.state.arraySize)})
+								}}>
+									Reset array
+								</button>
+							</div>
+						</form>
+					</div>
 				</div>
-				<div
-					className="row justify-content-center"
-					style={{ margin: '10px' }}
-				>
-					<button
-						className="btn btn-dark sort-button"
-						onClick={() =>
-							obj.bubbleSort(
-								array,
-								document.getElementsByClassName('array-bar'),
-								speed
-							)}
+				<div className="col-md-8 col-sm" >
+					<div
+						className="d-flex flex-row justify-content-center align-items-start col-auto"
+						style={{
+							height: '100%',
+							width: '1200px',
+							margin: '10px'
+						}}
 					>
-						Bubble sort
-					</button>
-
-					<button
-						className="btn btn-dark sort-button"
-						onClick={() =>
-							obj.mergeSort(
-								array,
-								document.getElementsByClassName('array-bar'),
-								speed * speed * 5
-							)}
-					>
-						Merge sort
-					</button>
-
-					<button
-						className="btn btn-danger sort-button"
-						onClick={() => this.resetArray(true)}
-					>
-						Reset Array
-					</button>
-				</div>
-				<div className="col d-flex justify-content-center">
-					<p>Slow motion control</p>
-				</div>
-				<div className="col d-flex justify-content-center">
-					<RangeSlider
-						min={1}
-						max={5}
-						value={speed}
-						onChange={(changeEvent) =>
-							this.setState({ speed: changeEvent.target.value })}
-					/>
+						{array.map((item, index) => (
+							<div
+								className="array-bar"
+								style={{
+									display: 'inline-block',
+									height: `${item * 5}px`,
+									width: '50px',
+									margin: '0 1px',
+									backgroundColor: `#303846`
+								}}
+								key={index}
+							/>
+						))}
+					</div>
 				</div>
 			</div>
 		);
