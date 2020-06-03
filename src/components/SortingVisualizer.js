@@ -86,7 +86,7 @@ class SortingVisualizer extends Component {
 						<form>
 							<div className="form-group form-component">
 								<label htmlFor="arraySize">
-									Array size : {this.state.arraySize}
+									Array size(10-50): {this.state.arraySize}
 								</label>
 								<input
 									type="number"
